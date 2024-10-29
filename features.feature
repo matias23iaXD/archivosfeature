@@ -1,160 +1,126 @@
-Feature: HU-1 Registro de Nuevo Usuario
-  Como nuevo usuario, 
-  quiero poder registrarme en la plataforma 
-  para acceder a los módulos de capacitación en el cuidado de niños con problemas mentales.
+Feature: HU01 - Registro de Usuario
+  Como nuevo usuario, quiero poder registrarme en la plataforma de capacitación para acceder a los módulos de atención a niños con problemas mentales.
 
-  Scenario Outline: Registro en la plataforma
+  Scenario Outline: Registro exitoso
     Given el usuario está en la página principal de KidCare
     When hace clic en "Registrarse"
     And completa el formulario con <correo> y <contraseña>
-    Then se muestra un <mensaje de confirmación>
+    Then se muestra el mensaje "Registro exitoso. Verifica tu correo."
+
+  Scenario Outline: Error de registro por correo duplicado
+    Given el usuario intenta registrarse con un <correo> ya existente
+    Then se muestra el mensaje "Error: El correo ya está registrado."
 
     Examples:
-      | correo                | contraseña | mensaje de confirmación                     |
-      | usuario1@email.com    | pass123    | "Registro exitoso. Verifica tu correo."     |
-      | usuario2@email.com    | pass456    | "Registro exitoso. Verifica tu correo."     |
-      | usuario1@email.com    | pass789    | "Error: El correo ya está registrado."      |
+      | correo              | contraseña |
+      | usuario1@email.com  | pass123    |
+      | usuario2@email.com  | pass456    |
 
+Feature: HU02 - Iniciar Sesión
+  Como usuario registrado, quiero poder iniciar sesión en la plataforma para acceder a mis datos y continuar con mi capacitación en el cuidado de niños con problemas mentales.
 
-Feature: HU-2 Selección de Cuidador Virtual
-  Como usuario, 
-  quiero poder seleccionar un cuidador virtual especializado en problemas mentales infantiles 
-  para recibir la capacitación adecuada.
+  Scenario Outline: Inicio de sesión exitoso
+    Given el usuario ingresa su <correo> y <contraseña> correctos
+    When presiona "Iniciar sesión"
+    Then accede a su perfil y ve su progreso.
 
-  Scenario Outline: Selección de cuidador virtual
-    Given el usuario está en la plataforma KidCare
-    When accede a la sección "Cuidadores"
-    And selecciona al cuidador <nombre del cuidador>
-    Then el sistema confirma la elección y muestra la disponibilidad de <nombre del cuidador>
+  Scenario Outline: Error en el inicio de sesión
+    Given el usuario ingresa una <contraseña> incorrecta
+    Then se muestra el mensaje de error "Contraseña incorrecta."
 
     Examples:
-      | nombre del cuidador |
-      | Maria Sánchez       |
-      | Pedro Gómez         |
-      | Lucía Martínez      |
+      | correo              | contraseña |
+      | usuario1@email.com  | pass123    |
+      | usuario2@email.com  | pass456    |
 
-Feature: HU-3 Programación de Sesión de Capacitación
-  Como usuario, 
-  quiero poder programar una sesión de capacitación con el cuidador virtual 
-  para aprender técnicas de cuidado de niños con problemas mentales.
+Feature: HU03 - Visualización de Perfil
+  Como usuario, quiero poder ver y editar mi perfil para mantener actualizada mi información personal.
 
-  Scenario Outline: Programación de una sesión de capacitación
-    Given el usuario selecciona al cuidador <nombre del cuidador>
-    When elige una fecha <fecha> y hora <hora>
+  Scenario: Ver perfil
+    Given el usuario está logueado
+    When hace clic en "Perfil"
+    Then ve su información personal actual.
+
+  Scenario: Editar perfil
+    Given el usuario está en su perfil
+    When hace clic en "Editar"
+    And modifica su información
+    Then guarda los cambios y ve una confirmación.
+
+Feature: HU04 - Selección de Entrenador
+  Como usuario, quiero poder seleccionar un entrenador virtual especializado en problemas mentales infantiles para recibir la capacitación más adecuada.
+
+  Scenario Outline: Selección de entrenador
+    Given el usuario accede a la sección "Entrenadores"
+    When selecciona un entrenador <nombre del entrenador>
+    Then el sistema confirma la selección y muestra la disponibilidad del entrenador.
+
+    Examples:
+      | nombre del entrenador |
+      | Maria Sánchez         |
+      | Pedro Gómez           |
+
+Feature: HU05 - Programación de Sesión
+  Como usuario, quiero poder programar una sesión de capacitación con el entrenador virtual para aprender sobre el manejo de niños con problemas mentales.
+
+  Scenario Outline: Programación de sesión
+    Given el usuario selecciona un entrenador <nombre del entrenador>
+    When elige una <fecha> y <hora>
     And confirma la programación
-    Then la sesión es registrada y el usuario recibe una confirmación de la sesión
+    Then la sesión es registrada y el usuario recibe una confirmación.
 
     Examples:
-      | nombre del cuidador | fecha       | hora  |
-      | Maria Sánchez       | 10/11/2024 | 10:00 |
-      | Pedro Gómez         | 11/11/2024 | 14:00 |
-      | Lucía Martínez      | 12/11/2024 | 09:00 |
+      | nombre del entrenador | fecha       | hora  |
+      | Maria Sánchez         | 10/11/2024 | 10:00 |
+      | Pedro Gómez           | 11/11/2024 | 14:00 |
 
-Feature: HU-4 Seguimiento de Progreso
-  Como usuario, 
-  quiero realizar un seguimiento de mi progreso 
-  para ver cómo mejoro en las técnicas de cuidado de niños con problemas mentales.
+Feature: HU06 - Realización de Actividades
+  Como usuario, quiero poder realizar actividades guiadas por el entrenador virtual para mejorar mis habilidades en el cuidado de niños con problemas mentales.
 
-  Scenario Outline: Visualización de progreso en la plataforma
-    Given el usuario está en su perfil de KidCare
+  Scenario Outline: Realización de actividades guiadas
+    Given el usuario accede a "Actividades"
+    When selecciona una actividad guiada <nombre de la actividad>
+    Then completa la actividad y recibe retroalimentación.
+
+    Examples:
+      | nombre de la actividad           |
+      | Manejo de situaciones de crisis  |
+      | Comunicación efectiva            |
+
+Feature: HU07 - Seguimiento de Progreso
+  Como usuario, quiero realizar un seguimiento de mi progreso para ver cómo mejoro en las técnicas de atención a niños con problemas mentales.
+
+  Scenario: Visualización de progreso
+    Given el usuario está en su perfil
     When hace clic en "Progreso"
-    Then ve una gráfica que muestra el progreso de <nombre del usuario> en el tiempo
+    Then ve una gráfica que muestra su progreso acumulado en el tiempo.
 
-    Examples:
-      | nombre del usuario |
-      | Juan Pérez         |
-      | Ana López          |
-      | Carlos Ruiz        |
+Feature: HU08 - Comunicación con el Entrenador
+  Como usuario, quiero poder comunicarme con mi entrenador virtual para recibir orientación adicional y hacer preguntas sobre la capacitación.
 
+  Scenario: Iniciar comunicación con el entrenador
+    Given el usuario selecciona "Comunicar con entrenador"
+    When envía un mensaje en el chat
+    Then recibe una respuesta y una notificación de la respuesta.
 
-Feature: HU- 5 Evaluación de Satisfacción
-  Como usuario, 
-  quiero poder evaluar mi experiencia en la plataforma KidCare 
-  para proporcionar retroalimentación sobre el servicio recibido.
+Feature: HU09 - Evaluación de Satisfacción
+  Como usuario, quiero poder evaluar mi experiencia en la plataforma y proporcionar retroalimentación sobre el servicio recibido.
 
-  Scenario Outline: Enviar evaluación de satisfacción
-    Given el usuario completa una sesión de capacitación con el cuidador <nombre del cuidador>
+  Scenario Outline: Evaluación de sesión de capacitación
+    Given el usuario completa una sesión con un entrenador <nombre del entrenador>
     When selecciona "Evaluar"
-    And elige una calificación de <calificación>
-    And proporciona el comentario <comentario>
-    Then se envía la evaluación y el usuario recibe una confirmación
+    And elige una calificación y escribe un comentario <comentario>
+    Then envía la evaluación y recibe una confirmación.
 
     Examples:
-      | nombre del cuidador | calificación | comentario                     |
-      | Maria Sánchez       | 5            | "Muy útil y fácil de entender" |
-      | Pedro Gómez         | 4            | "Buena capacitación, pero faltó tiempo" |
-      | Lucía Martínez      | 3            | "Necesita más detalles en algunos temas" |
+      | nombre del entrenador | comentario                      |
+      | Maria Sánchez         | "Excelente capacitación"        |
+      | Pedro Gómez           | "Faltaron algunos detalles"     |
 
-Feature: HU-6 Recomendaciones de Actividades Adicionales
-  Como usuario, quiero recibir recomendaciones de actividades adicionales para complementar mi capacitación.
+Feature: HU10 - Gestión de Suscripción y Pagos
+  Como usuario, quiero poder gestionar mi suscripción a la plataforma de capacitación para realizar pagos de forma fácil y segura.
 
-  Scenario Outline: Recomendación de actividades según el progreso del usuario
-    Given el usuario <nombre del usuario> ha completado <cantidad de actividades> actividades
-    When accede a la sección de progreso
-    Then se muestra una lista de actividades recomendadas para mejorar en <área específica>
-
-    Examples:
-      | nombre del usuario | cantidad de actividades | área específica        |
-      | Juan Pérez         | 5                       | manejo de ansiedad     |
-      | Ana López          | 3                       | técnicas de comunicación |
-      | Carlos Ruiz        | 7                       | control de emociones   |
-
-Feature:HU-7  Configuración de Privacidad
-  Como usuario, quiero poder ajustar la configuración de privacidad para controlar qué información comparto y con quién.
-
-  Scenario Outline: Ajuste de configuración de privacidad
-    Given el usuario <nombre del usuario> está en su perfil
-    When selecciona "Configuración de Privacidad"
-    And elige compartir solo <nivel de privacidad>
-    Then la configuración se guarda y el usuario recibe una confirmación
-
-    Examples:
-      | nombre del usuario | nivel de privacidad             |
-      | Juan Pérez         | datos visibles solo para cuidadores |
-      | Ana López          | datos visibles para todos los usuarios |
-      | Carlos Ruiz        | datos visibles solo para administradores |
-
-Feature:HU-8 Revisión de Actividades Incorrectas
-  Como usuario, quiero revisar las actividades que hice incorrectamente para mejorar mis habilidades y evitar errores futuros.
-
-  Scenario Outline: Visualización y repetición de actividades incorrectas
-    Given el usuario <nombre del usuario> completó una actividad con errores
-    When revisa el resultado de la actividad
-    Then ve un resumen de los errores cometidos en <actividad>
-    And puede seleccionar "Repetir actividad" para intentarla de nuevo
-
-    Examples:
-      | nombre del usuario | actividad                          |
-      | Juan Pérez         | manejo de situaciones de crisis    |
-      | Ana López          | comunicación efectiva con niños    |
-      | Carlos Ruiz        | técnicas de relajación y calma     |
-
-Feature: HU-9 Notificaciones de Sesiones
-  Como usuario, quiero recibir notificaciones recordatorias antes de mis sesiones reservadas, para no olvidarlas y poder asistir a tiempo.
-
-  Scenario Outline: Envío de notificación antes de la sesión
-    Given el usuario <nombre del usuario> tiene una sesión programada con <nombre del cuidador>
-    When falta una hora para la sesión
-    Then recibe una notificación recordatoria en su dispositivo
-
-    Examples:
-      | nombre del usuario | nombre del cuidador |
-      | Juan Pérez         | Maria Sánchez       |
-      | Ana López          | Pedro Gómez         |
-      | Carlos Ruiz        | Lucía Martínez      |
-
-
-Feature:HU-10 Acceso a la Biblioteca de Recursos Educativos
-  Como usuario, quiero acceder a una biblioteca de recursos educativos sobre el manejo de problemas mentales en niños para aprender más sobre su cuidado.
-
-  Scenario Outline: Visualización y descarga de recursos educativos
-    Given el usuario <nombre del usuario> accede a la sección "Recursos Educativos"
-    When selecciona la categoría <categoría de recursos>
-    Then ve una lista de recursos disponibles en esa categoría
-    And puede seleccionar "Descargar" para guardar el archivo en su dispositivo
-
-    Examples:
-      | nombre del usuario | categoría de recursos          |
-      | Juan Pérez         | manejo de ansiedad infantil    |
-      | Ana López          | estrategias de comunicación    |
-      | Carlos Ruiz        | técnicas de relajación         |
+  Scenario: Gestión de suscripción
+    Given el usuario accede a "Suscripción"
+    When selecciona "Modificar suscripción"
+    Then puede ajustar su plan o cancelar su suscripción, recibiendo una confirmación de los cambios.
